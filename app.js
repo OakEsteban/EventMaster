@@ -9,7 +9,7 @@ const pool = mysql.createPool({
     connectionLimit : 10, // número máximo de conexiones simultáneas
     host: 'demo3.linkisite.com',
     user: 'demo3linkisite_root',
-    password: 'univalle2024',
+    password: '',
     database: 'demo3linkisite_eventmaster'
 });
 
