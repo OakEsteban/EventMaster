@@ -5,7 +5,7 @@ const {
   createRegistration,
   updateRegistration,
   deleteRegistration
-} = require("../controller/registrationController");
+} = require("../controllers/registrationController");
 
 const router = express.Router();
 
