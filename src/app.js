@@ -1,9 +1,15 @@
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors');
+require('dotenv').config();
 
 
 // Crear la aplicación Express
 const app = express();
+
+// Configuración de CORS
+app.use(cors());
+
 app.use(express.json());
 
 // Definir una ruta de prueba para verificar la conexión
