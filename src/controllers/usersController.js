@@ -1,4 +1,5 @@
 const { pool } = require("../db");
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;  // Puedes ajustar la complejidad del hash aquí
 
@@ -47,6 +48,46 @@ const createUser = async (req, res) => {
     });
 };
 
+// Iniciar Sesión
+const loginUser = async (req, res) => {
+    const { identifier, password } = req.body;
+    if (!identifier || !password) {
+        return res.status(400).json({ error: "Nombre de usuario/email y clave requeridos" });
+    }
+
+    // Consulta para obtener el usuario por username o email
+    let sql = 'SELECT * FROM users WHERE username = ? OR email = ?';
+    pool.query(sql, [identifier, identifier], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        if (results.length === 0) {
+            return res.status(401).json({ error: "Usuario o clave incorrectos" });
+        }
+
+        const user = results[0];
+
+        // Comparar la clave ingresada con el hash almacenado
+        bcrypt.compare(password, user.password_hash, (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            if (!result) {
+                return res.status(401).json({ error: "Usuario o clave incorrectos" });
+            }
+            
+            const userForToken = {
+                id: user.id,
+                username: user.username
+            }
+            // Crear un token JWT
+            const token = jwt.sign(userForToken, process.env.SECRET_KEY, { expiresIn: '1h' });
+            // Enviar el token en la respuesta
+            res.json(token);
+        });
+    });
+}
+
 // Actualizar un usuario
 const updateUser = async (req, res) => {
     const { id } = req.params;
@@ -83,4 +124,4 @@ const deleteUser = async (req, res) => {
     });
 };
 
-module.exports = { usersGetAll, getUserById, createUser, updateUser, deleteUser };
+module.exports = { usersGetAll, getUserById, createUser, loginUser, updateUser, deleteUser };
