@@ -1,0 +1,18 @@
+
+# POST http://localhost:3000/users/create 
+# Content-Type: application/json
+
+# {
+#     "username": "John Doe",
+#     "email": "ejemplo@correo.com",
+#     "password": "john123456" 
+# }
+
+POST http://localhost:3000/users/create
+Content-Type: application/json
+
+{
+    "username": "Cristiano Ronaldo",
+    "email": "SIUUU@elbicho.com",
+    "password": "cristiano7"
+}
