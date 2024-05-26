@@ -1,9 +1,30 @@
 const { pool } = require("../db");
 
-// Obtener todos los eventos
+// Obtener todos los eventos con filtros
 const getEvents = async (req, res) => {
-    let sql = 'SELECT * FROM events';
-    pool.query(sql, (err, results) => {
+    const { title, date, location, category } = req.query;
+
+    let sql = 'SELECT * FROM events WHERE 1=1';
+    const params = [];
+
+    if (title) {
+        sql += ' AND title LIKE ?';
+        params.push(`%${title}%`);
+    }
+    if (date) {
+        sql += ' AND date = ?';
+        params.push(date);
+    }
+    if (location) {
+        sql += ' AND location LIKE ?';
+        params.push(`%${location}%`);
+    }
+    if (category) {
+        sql += ' AND event_category_id = ?';
+        params.push(category);
+    }
+
+    pool.query(sql,params, (err, results) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
@@ -23,10 +44,36 @@ const getEventById = async (req, res) => {
     });
 };
 
+// Obtener todos los eventos creados por un usuario
+const getCreatedEventsByUser = async (req, res) => {
+    const { userId } = req.params;
+    let sql = 'SELECT * FROM events WHERE user_id = ?';
+    pool.query(sql, [userId], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.json(results);
+    });
+};
+
+// Obtener eventos a los que un usuario se ha inscrito
+const getEventsByUserSuscription = async (req, res) => {
+    const { userId } = req.params;
+    let sql = 'SELECT e.* FROM events e JOIN subscriptions s ON e.id = s.event_id WHERE s.user_id = ?';
+    pool.query(sql, [userId], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.json(results);
+    });
+}
+
 // Crear un nuevo evento
 const createEvent = async (req, res) => {
     const { title, description, date, time, location, event_category_id, user_id } = req.body;
     let sql = 'INSERT INTO events (title, description, date, time, location, event_category_id, user_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())';
+    console.log(req.body.user_id)
+    console.log(req.body)
     pool.query(sql, [title, description, date, time, location, event_category_id, user_id], (err, results) => {
         if (err) {
             return res.status(500).json({ error: err.message });
@@ -66,4 +113,11 @@ const deleteEvent = async (req, res) => {
     });
 };
 
-module.exports = { getEvents, getEventById, createEvent, updateEvent, deleteEvent };
+module.exports = { 
+    getEvents, 
+    getEventById,
+    getCreatedEventsByUser,
+    getEventsByUserSuscription, 
+    createEvent, 
+    updateEvent, 
+    deleteEvent };
