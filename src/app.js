@@ -26,12 +26,14 @@ const userRoutes = require('./routes/usersRoutes');
 const eventCategoryRoutes = require('./routes/eventCategoryRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const registrationRoutes = require('./routes/registrationRoutes');
+const emailRoutes = require('./routes/emailRoutes');
 
 // Routes
 app.use('/users', userRoutes); 
 app.use('/eventCategory', eventCategoryRoutes); 
 app.use('/event', eventRoutes);
 app.use('/registration', registrationRoutes);
+app.use('/email', emailRoutes);
 
 // Iniciar el servidor
 const PORT = 3000;
