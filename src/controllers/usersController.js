@@ -83,7 +83,18 @@ const loginUser = async (req, res) => {
             // Crear un token JWT
             const token = jwt.sign(userForToken, process.env.SECRET_KEY, { expiresIn: '1h' });
             // Enviar el token en la respuesta
-            res.json(token);
+            res.status(200).json(
+                {
+                    success: true,
+                    message: 'Inicio de sesión exitoso',
+                    token: token,
+                    user: {
+                        id: user.id,
+                        username: user.username,
+                        email: user.email
+                    }
+                }
+            );
         });
     });
 }
