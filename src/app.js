@@ -2,7 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 require('dotenv').config();
-
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('../swagger_output.json');
 
 // Crear la aplicación Express
 const app = express();
@@ -34,6 +35,8 @@ app.use('/eventCategory', eventCategoryRoutes);
 app.use('/event', eventRoutes);
 app.use('/registration', registrationRoutes);
 app.use('/email', emailRoutes);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Iniciar el servidor
 const PORT = 3000;
