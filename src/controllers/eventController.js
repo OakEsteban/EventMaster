@@ -77,6 +77,32 @@ const getEventsByUserSuscription = async (req, res) => {
     });
 }
 
+//Obtener los principales eventos los cuales son los  10 eventos que tienen mas inscripciones 
+const getMainEvents = async (req, res) => {
+    const sql = `
+        SELECT e.*, COUNT(s.id) as registrations_count
+        FROM events e
+        JOIN event_registration s ON e.id = s.event_id
+        GROUP BY e.id
+        ORDER BY registrations_count DESC
+        LIMIT 10
+    `;
+
+    pool.query(sql, (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+
+        // Verifica si results es un array
+        if (Array.isArray(results) && results.length > 0) {
+            res.json(results);
+        } else {
+            res.status(404).json({ message: 'No main events found' });
+        }
+    });
+}
+
+
 // Crear un nuevo evento
 const createEvent = async (req, res) => {
     const { title, description, date, time, location, event_category_id, user_id } = req.body;
@@ -127,6 +153,7 @@ module.exports = {
     getEventById,
     getCreatedEventsByUser,
     getEventsByUserSuscription, 
+    getMainEvents,
     createEvent, 
     updateEvent, 
     deleteEvent };
