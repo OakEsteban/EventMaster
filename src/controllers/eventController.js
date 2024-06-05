@@ -4,7 +4,16 @@ const { pool } = require("../db");
 const getEvents = async (req, res) => {
     const { title, date, location, category } = req.query;
 
-    let sql = 'SELECT * FROM events WHERE 1=1';
+    let sql = `SELECT ev.id,
+            ev.title,
+            ev.date,
+            ev.location,
+            ev.description,
+            ec.name as category,
+            ev.time,
+            ev.user_id
+            FROM events ev 
+            INNER JOIN event_category ec ON ec.id = ev.event_category_id where 1=1`
     const params = [];
 
     if (title) {

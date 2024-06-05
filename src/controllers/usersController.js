@@ -135,4 +135,24 @@ const deleteUser = async (req, res) => {
     });
 };
 
-module.exports = { usersGetAll, getUserById, createUser, loginUser, updateUser, deleteUser };
+// Actualizar contraseña
+const recoverPasswordByEmail = async (req, res) => {
+    const { email, password } = req.body;
+    bcrypt.hash(password, saltRounds, (err, hash) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        let sql = 'UPDATE users SET password_hash = ? WHERE email = ?';
+        pool.query(sql, [hash, email], (err, results) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            if (results.affectedRows === 0) {
+                return res.status(404).json({ message: 'Usuario no encontrado' });
+            }
+            res.json({ message: 'Usuario actualizado' });
+        });
+    });
+};
+
+module.exports = { usersGetAll, getUserById, createUser, loginUser, updateUser, deleteUser, recoverPasswordByEmail };
