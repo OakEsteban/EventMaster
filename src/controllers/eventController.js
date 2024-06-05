@@ -55,9 +55,9 @@ const getEventById = async (req, res) => {
 
 // Obtener todos los eventos creados por un usuario
 const getCreatedEventsByUser = async (req, res) => {
-    const { userId } = req.params;
+    const { user_id } = req.params;
     let sql = 'SELECT * FROM events WHERE user_id = ?';
-    pool.query(sql, [userId], (err, results) => {
+    pool.query(sql, [user_id], (err, results) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
@@ -67,9 +67,9 @@ const getCreatedEventsByUser = async (req, res) => {
 
 // Obtener eventos a los que un usuario se ha inscrito
 const getEventsByUserSuscription = async (req, res) => {
-    const { userId } = req.params;
-    let sql = 'SELECT e.* FROM events e JOIN subscriptions s ON e.id = s.event_id WHERE s.user_id = ?';
-    pool.query(sql, [userId], (err, results) => {
+    const { user_id } = req.params;
+    let sql = 'SELECT e.* FROM events e JOIN event_registration s ON e.id = s.event_id WHERE s.user_id = ?';
+    pool.query(sql, [user_id], (err, results) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }

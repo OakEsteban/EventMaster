@@ -11,6 +11,19 @@ const getAllRegistrations = async (req, res) => {
     });
 };
 
+// Obtener inscripciones de un usuario
+const getRegistrationsByUser = async (req, res) => {
+    const { user_id } = req.params;
+    let sql = 'SELECT * FROM event_registration WHERE user_id = ?';
+    pool.query(sql, [user_id], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.json(results);
+    });
+}
+
+
 // Obtener una inscripción por ID
 const getRegistrationById = async (req, res) => {
     const { id } = req.params;
@@ -66,10 +79,26 @@ const deleteRegistration = async (req, res) => {
     });
 };
 
+// Eliminar inscripcion de un usuario a un evento
+const deleteRegistrationByUser = async (req, res) => {
+    const { user_id, event_id } = req.body;
+    let sql = 'DELETE FROM event_registration WHERE user_id = ? AND event_id = ?';
+    pool.query(sql, [user_id, event_id], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ message: 'Inscripción no encontrada' });
+        }
+        res.json({ message: 'Inscripción eliminada' });
+    });
+}
+
 module.exports = {
     getAllRegistrations,
     getRegistrationById,
     createRegistration,
     updateRegistration,
-    deleteRegistration
+    deleteRegistrationByUser,
+    deleteRegistration,
 };

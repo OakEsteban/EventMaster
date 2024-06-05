@@ -1,3 +1,4 @@
-GET http://localhost:3000/event/created/6
+//GET http://localhost:3000/event/created/6
 
 
+GET http://localhost:3000/event/suscriptions/6
