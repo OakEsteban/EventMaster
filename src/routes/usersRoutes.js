@@ -6,6 +6,7 @@ const {
   loginUser,
   updateUser,
   deleteUser,
+  recoverPasswordByEmail
 } = require("../controllers/usersController");
 
 const router = express.Router();
@@ -17,6 +18,7 @@ router.post("/create", createUser);                   // Crear un nuevo usuario
 router.post("/login", loginUser);                    // Iniciar sesión
 router.put("/update/:id", updateUser);                // Actualizar un usuario existente
 router.delete("/delete/:id", deleteUser);             // Eliminar un usuario
+router.post("/recover", recoverPasswordByEmail)        //recuperar contraseña
 
 module.exports = router;
 
